@@ -31,6 +31,8 @@ scheduling.scheduleJob('1-59 * 4-23,0-2 * * *', function() {
     cur_seconds += 86400;
   }
 
+  io.sockets.emit('data', cur_seconds);
+
   let finalLocations = [];
 
   let getFinalLocs = (queried) => {
