@@ -1,0 +1,17 @@
+{
+  "knex": {
+    "connection": "DATABASE_URL"
+  },
+  "passport": {
+    "Google": {
+      "clientID": "GOOG_ID",
+      "clientSecret": "GOOG_SECRET",
+      "callbackURL": "GOOG_CB"
+    },
+    "Facebook": {
+      "clientID": "FB_ID",
+      "clientSecret": "FB_SECRET",
+      "callbackURL": "FB_CB"
+    }
+  }
+}
