@@ -21,7 +21,6 @@ io.on('connection', function(socket) {
 });
 
 scheduling.scheduleJob('1-59 * 4-23,0-2 * * *', function() {
-  io.sockets.emit('data', 'Welcome1!!');
   let d = new Date();
 
   let cur_seconds = d.toTimeString().split(' ')[0].split(':');
@@ -31,12 +30,9 @@ scheduling.scheduleJob('1-59 * 4-23,0-2 * * *', function() {
     cur_seconds += 86400;
   }
 
-  io.sockets.emit('data', cur_seconds);
-
   let finalLocations = [];
 
   let getFinalLocs = (queried) => {
-    io.sockets.emit('data', 'Welcome4!!');
     const newArr = [];
     const getShapes = [];
     const getIdNext = [];
@@ -88,9 +84,7 @@ scheduling.scheduleJob('1-59 * 4-23,0-2 * * *', function() {
 
 
     Promise.all(getIdNext).then((firstRes) => { 
-      io.sockets.emit('data', 'Welcome5!!');
       Promise.all(getIdPrev).then((secondRes) => {
-        io.sockets.emit('data', 'Welcome6!!');
         for (var p = 0; p < newArr.length; p++) {
           // const toChange = [(Number(newArr[p][5][0]) - Number(newArr[p][4][0])) * Number(newArr[p][1]), (Number(newArr[p][5][1]) - Number(newArr[p][4][1])) * Number(newArr[p][1])];
           // const finalPoint = [Number(newArr[p][4][0]) + toChange[0], Number(newArr[p][4][1]) + toChange[1], newArr[p][6], newArr[p][7]];
@@ -98,14 +92,13 @@ scheduling.scheduleJob('1-59 * 4-23,0-2 * * *', function() {
           getShapes.push(newdb.raw("SELECT * FROM shapes WHERE id="+(Math.floor(newArr[p][1] * (firstRes[p].rows[0].id - secondRes[p].rows[0].id)) + secondRes[p].rows[0].id)));
         }
         Promise.all(getShapes).then((finalRes) => {
-          io.sockets.emit('data', 'Welcome7!!');
           // console.log('finalRes: ', finalRes.length);
           // console.log(newArr[j][4]);
           // console.log(newArr[j][6]);
           for (var j = 0; j < finalRes.length; j++) {
             finalLocations.push([Number(finalRes[j].rows[0].shape_pt_lat), Number(finalRes[j].rows[0].shape_pt_lon), newArr[j][4], newArr[j][6]]);
           }
-          //io.sockets.emit('data', finalLocations);
+          io.sockets.emit('data', finalLocations);
         });
       });
     });
@@ -117,9 +110,7 @@ scheduling.scheduleJob('1-59 * 4-23,0-2 * * *', function() {
       
     });
   } else if ((d.getDay() == 0 && cur_seconds >= 14400) || (d.getDay() == 1 && cur_seconds >= 86400)) {
-    io.sockets.emit('data', 'Welcome2!!');
     newdb.raw("SELECT * FROM gtfs_schedule WHERE trip_id LIKE '%SUN%' ORDER BY id").then((result) => {
-      io.sockets.emit('data', 'Welcome3!!');
       getFinalLocs(result.rows);
     });
   } else {
