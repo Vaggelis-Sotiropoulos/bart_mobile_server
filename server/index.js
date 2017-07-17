@@ -17,6 +17,7 @@ const server = app.listen(PORT, () => {
 const io = socket(server);
 
 io.on('connection', function(socket) {
+  io.sockets.emit('data', 'Welcome!!');
   console.log('In business');
 });
 
