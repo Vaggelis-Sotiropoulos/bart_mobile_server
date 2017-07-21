@@ -13,18 +13,10 @@ schedule.scheduleJob('0 * 4-23,0-2 * * *', function() {
   .then((response) => {
     if (response.body._readableState.buffer.tail) {
       var promises = [];
-      
-      // var d = new Date();
-      // var cur_seconds = d.toTimeString().split(' ')[0].split(':');
-      // cur_seconds = (+cur_seconds[0]) * 60 * 60 + (+cur_seconds[1]) * 60 + (+cur_seconds[2]);
 
       var conform = ByteBuffer.btoa(response.body._readableState.buffer.tail.data);
-      //var newConform = ByteBuffer.btoa(response.body._readableState.buffer.head.data);
 
       var feed = GtfsRealtimeBindings.FeedMessage.decode(conform);
-      //var newFeed = GtfsRealtimeBindings.FeedMessage.decode(newConform);
-      //console.log('feed: ', feed.entity[0]);
-      //console.log('newFeed: ', newFeed);
 
       feed.entity.forEach(function(entity) {
         if (entity.trip_update) {
@@ -55,14 +47,11 @@ schedule.scheduleJob('0 * 4-23,0-2 * * *', function() {
       });
 
       console.log('********* HASH ********** ', hash)
-      // var tempChanged = [];
       var tempPromises = [];
-      // db.select().table('gtfs_schedule').where({'trip_id': '41DC11', 'stop_sequence': 5}).then((result) => {console.log(result)});
 
       for (var v in hash) {
         for (var z = 0; z < hash[v].length; z++) {
           if (hash[v][z][1] > 0 && hash[v][z][2] === false) {
-            // tempChanged.push(db.select().table('gtfs_schedule').where({'trip_id': key, 'stop_sequence':  someArr[v][key][z][0]}));
             hash[v][z][2] = true;
             tempPromises.push(db('gtfs_schedule').where({'trip_id': v, 'stop_sequence': hash[v][z][0]}).increment('arrival_time', hash[v][z][1]));
             tempPromises.push(db('gtfs_schedule').where({'trip_id': v, 'stop_sequence': hash[v][z][0]}).increment('departure_time', hash[v][z][1]));
@@ -81,4 +70,5 @@ schedule.scheduleJob('0 * 4-23,0-2 * * *', function() {
 schedule.scheduleJob('0 0 3 * * *', function() {
   hash = {};
 })
+
 module.exports = hash;
