@@ -1,5 +1,5 @@
 var schedule = require('node-schedule');
-const db = require('knex')(require('../knexfile.js')); 
+const db = require('knex')(require('../../knexfile.js')); 
 const config = require('config');
 const env = require('dotenv').config();
 
